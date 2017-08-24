@@ -5,8 +5,6 @@ import (
 	"net/url"
 	"reflect"
 	"testing"
-
-	"bitbucket.org/effcommsa/illuminate-common/pagination"
 )
 
 // User contains the data required for a unique user.
@@ -26,20 +24,20 @@ var newPageDataProvider = []struct {
 }{
 	{
 		name: "Page creation fails due to an invalid url query",
-		url:  "api.illuminate.effcomm.com/v1/users?page=invalid_page&limit=invalid_limit&order_by=&order=invalid_order",
+		url:  "api.demo.com/v1/users?page=invalid_page&limit=invalid_limit&order_by=&order=invalid_order",
 		want: nil,
 		err:  errors.New("Page is invalid"),
 	},
 	{
 		name: "Successful page creation - no paging, no ordering",
-		url:  "api.illuminate.effcomm.com/v1/users",
+		url:  "api.demo.com/v1/users",
 		results: []*User{
 			{ID: 1, Name: "John", Surname: "Smith"},
 		},
 		want: &pagination.Page{
 			Count: 1,
 			Links: &pagination.Links{
-				Self:     "api.illuminate.effcomm.com/v1/users",
+				Self:     "api.demo.com/v1/users",
 				Previous: "",
 				Next:     "",
 			},
@@ -51,7 +49,7 @@ var newPageDataProvider = []struct {
 	},
 	{
 		name: "Successful page creation - ordering, no paging",
-		url:  "api.illuminate.effcomm.com/v1/users?order_by=name&order=asc",
+		url:  "api.demo.com/v1/users?order_by=name&order=asc",
 		results: []*User{
 			{ID: 1, Name: "John", Surname: "Smith"},
 			{ID: 2, Name: "Jill", Surname: "Doe"},
@@ -60,7 +58,7 @@ var newPageDataProvider = []struct {
 		want: &pagination.Page{
 			Count: 3,
 			Links: &pagination.Links{
-				Self:     "api.illuminate.effcomm.com/v1/users?order_by=name&order=asc",
+				Self:     "api.demo.com/v1/users?order_by=name&order=asc",
 				Previous: "",
 				Next:     "",
 			},
@@ -74,14 +72,14 @@ var newPageDataProvider = []struct {
 	},
 	{
 		name:    "Successful page creation - invalid results",
-		url:     "api.illuminate.effcomm.com/v1/users?page=1&limit=3&order_by=name&order=asc",
+		url:     "api.demo.com/v1/users?page=1&limit=3&order_by=name&order=asc",
 		results: "invalid results",
 		want:    nil,
 		err:     errors.New("The provided collection is not a slice"),
 	},
 	{
 		name: "Successful page creation - first page",
-		url:  "api.illuminate.effcomm.com/v1/users?page=1&limit=3&order_by=name&order=asc",
+		url:  "api.demo.com/v1/users?page=1&limit=3&order_by=name&order=asc",
 		results: []*User{
 			{ID: 1, Name: "John", Surname: "Smith"},
 			{ID: 2, Name: "Jill", Surname: "Doe"},
@@ -90,9 +88,9 @@ var newPageDataProvider = []struct {
 		want: &pagination.Page{
 			Count: 3,
 			Links: &pagination.Links{
-				Next:     "api.illuminate.effcomm.com/v1/users?limit=3&order=asc&order_by=name&page=2",
+				Next:     "api.demo.com/v1/users?limit=3&order=asc&order_by=name&page=2",
 				Previous: "",
-				Self:     "api.illuminate.effcomm.com/v1/users?page=1&limit=3&order_by=name&order=asc",
+				Self:     "api.demo.com/v1/users?page=1&limit=3&order_by=name&order=asc",
 			},
 			Results: []*User{
 				{ID: 1, Name: "John", Surname: "Smith"},
@@ -104,7 +102,7 @@ var newPageDataProvider = []struct {
 	},
 	{
 		name: "Successful page creation - second page",
-		url:  "api.illuminate.effcomm.com/v1/users?page=2&limit=3&order_by=name&order=asc",
+		url:  "api.demo.com/v1/users?page=2&limit=3&order_by=name&order=asc",
 		results: []*User{
 			{ID: 1, Name: "John", Surname: "Smith"},
 			{ID: 2, Name: "Jill", Surname: "Doe"},
@@ -113,9 +111,9 @@ var newPageDataProvider = []struct {
 		want: &pagination.Page{
 			Count: 3,
 			Links: &pagination.Links{
-				Next:     "api.illuminate.effcomm.com/v1/users?limit=3&order=asc&order_by=name&page=3",
-				Previous: "api.illuminate.effcomm.com/v1/users?limit=3&order=asc&order_by=name&page=1",
-				Self:     "api.illuminate.effcomm.com/v1/users?page=2&limit=3&order_by=name&order=asc",
+				Next:     "api.demo.com/v1/users?limit=3&order=asc&order_by=name&page=3",
+				Previous: "api.demo.com/v1/users?limit=3&order=asc&order_by=name&page=1",
+				Self:     "api.demo.com/v1/users?page=2&limit=3&order_by=name&order=asc",
 			},
 			Results: []*User{
 				{ID: 1, Name: "John", Surname: "Smith"},
@@ -127,7 +125,7 @@ var newPageDataProvider = []struct {
 	},
 	{
 		name: "Successful page creation - third page",
-		url:  "api.illuminate.effcomm.com/v1/users?page=3&limit=3&order_by=surname&order=desc",
+		url:  "api.demo.com/v1/users?page=3&limit=3&order_by=surname&order=desc",
 		results: []*User{
 			{ID: 1, Name: "John", Surname: "Smith"},
 			{ID: 2, Name: "Jill", Surname: "Doe"},
@@ -136,8 +134,8 @@ var newPageDataProvider = []struct {
 			Count: 2,
 			Links: &pagination.Links{
 				Next:     "",
-				Previous: "api.illuminate.effcomm.com/v1/users?limit=3&order=desc&order_by=surname&page=2",
-				Self:     "api.illuminate.effcomm.com/v1/users?page=3&limit=3&order_by=surname&order=desc",
+				Previous: "api.demo.com/v1/users?limit=3&order=desc&order_by=surname&page=2",
+				Self:     "api.demo.com/v1/users?page=3&limit=3&order_by=surname&order=desc",
 			},
 			Results: []*User{
 				{ID: 1, Name: "John", Surname: "Smith"},
