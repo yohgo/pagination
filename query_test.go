@@ -5,8 +5,6 @@ import (
 	"net/url"
 	"reflect"
 	"testing"
-
-	"bitbucket.org/effcommsa/illuminate-common/pagination"
 )
 
 // newQueryDataProvider provides data for the TestNewQuery function.
@@ -25,7 +23,7 @@ var newQueryDataProvider = []struct {
 	},
 	{
 		name:  "Successful Query creation - no paging, no ordering",
-		query: "api.illuminate.effcomm.com/v1/users",
+		query: "api.demo.com/v1/users",
 		got: &pagination.Query{
 			Page:    0,
 			Limit:   0,
