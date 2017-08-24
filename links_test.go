@@ -4,8 +4,6 @@ import (
 	"net/url"
 	"reflect"
 	"testing"
-
-	"bitbucket.org/effcommsa/illuminate-common/pagination"
 )
 
 // newLinksDataProvider provides data for the TestNewLinks function.
