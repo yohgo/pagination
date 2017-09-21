@@ -4,6 +4,8 @@ import (
 	"net/url"
 	"reflect"
 	"testing"
+
+	"github.com/yohgo/pagination"
 )
 
 // newLinksDataProvider provides data for the TestNewLinks function.
