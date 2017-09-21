@@ -5,6 +5,8 @@ import (
 	"net/url"
 	"reflect"
 	"testing"
+
+	"github.com/yohgo/pagination"
 )
 
 // User contains the data required for a unique user.
@@ -23,10 +25,32 @@ var newPageDataProvider = []struct {
 	err     error
 }{
 	{
-		name: "Page creation fails due to an invalid url query",
+		name: "Page creation fails - invalid url query",
 		url:  "api.demo.com/v1/users?page=invalid_page&limit=invalid_limit&order_by=&order=invalid_order",
 		want: nil,
 		err:  errors.New("Page is invalid"),
+	},
+	{
+		name:    "Page creation fails - invalid results",
+		url:     "api.demo.com/v1/users?page=1&limit=3&order_by=name&order=asc",
+		results: "invalid results",
+		want:    nil,
+		err:     errors.New("The provided collection is not a slice"),
+	},
+	{
+		name:    "Successful page creation - no paging, no ordering, empty results",
+		url:     "api.demo.com/v1/users",
+		results: []*User{},
+		want: &pagination.Page{
+			Count: 0,
+			Links: &pagination.Links{
+				Self:     "api.demo.com/v1/users",
+				Previous: "",
+				Next:     "",
+			},
+			Results: []interface{}{},
+		},
+		err: nil,
 	},
 	{
 		name: "Successful page creation - no paging, no ordering",
@@ -41,8 +65,8 @@ var newPageDataProvider = []struct {
 				Previous: "",
 				Next:     "",
 			},
-			Results: []*User{
-				{ID: 1, Name: "John", Surname: "Smith"},
+			Results: []interface{}{
+				&User{ID: 1, Name: "John", Surname: "Smith"},
 			},
 		},
 		err: nil,
@@ -62,20 +86,13 @@ var newPageDataProvider = []struct {
 				Previous: "",
 				Next:     "",
 			},
-			Results: []*User{
-				{ID: 1, Name: "John", Surname: "Smith"},
-				{ID: 2, Name: "Jill", Surname: "Doe"},
-				{ID: 3, Name: "Paul", Surname: "Johnson"},
+			Results: []interface{}{
+				&User{ID: 1, Name: "John", Surname: "Smith"},
+				&User{ID: 2, Name: "Jill", Surname: "Doe"},
+				&User{ID: 3, Name: "Paul", Surname: "Johnson"},
 			},
 		},
 		err: nil,
-	},
-	{
-		name:    "Successful page creation - invalid results",
-		url:     "api.demo.com/v1/users?page=1&limit=3&order_by=name&order=asc",
-		results: "invalid results",
-		want:    nil,
-		err:     errors.New("The provided collection is not a slice"),
 	},
 	{
 		name: "Successful page creation - first page",
@@ -92,10 +109,10 @@ var newPageDataProvider = []struct {
 				Previous: "",
 				Self:     "api.demo.com/v1/users?page=1&limit=3&order_by=name&order=asc",
 			},
-			Results: []*User{
-				{ID: 1, Name: "John", Surname: "Smith"},
-				{ID: 2, Name: "Jill", Surname: "Doe"},
-				{ID: 3, Name: "Paul", Surname: "Johnson"},
+			Results: []interface{}{
+				&User{ID: 1, Name: "John", Surname: "Smith"},
+				&User{ID: 2, Name: "Jill", Surname: "Doe"},
+				&User{ID: 3, Name: "Paul", Surname: "Johnson"},
 			},
 		},
 		err: nil,
@@ -115,10 +132,10 @@ var newPageDataProvider = []struct {
 				Previous: "api.demo.com/v1/users?limit=3&order=asc&order_by=name&page=1",
 				Self:     "api.demo.com/v1/users?page=2&limit=3&order_by=name&order=asc",
 			},
-			Results: []*User{
-				{ID: 1, Name: "John", Surname: "Smith"},
-				{ID: 2, Name: "Jill", Surname: "Doe"},
-				{ID: 3, Name: "Paul", Surname: "Johnson"},
+			Results: []interface{}{
+				&User{ID: 1, Name: "John", Surname: "Smith"},
+				&User{ID: 2, Name: "Jill", Surname: "Doe"},
+				&User{ID: 3, Name: "Paul", Surname: "Johnson"},
 			},
 		},
 		err: nil,
@@ -137,9 +154,9 @@ var newPageDataProvider = []struct {
 				Previous: "api.demo.com/v1/users?limit=3&order=desc&order_by=surname&page=2",
 				Self:     "api.demo.com/v1/users?page=3&limit=3&order_by=surname&order=desc",
 			},
-			Results: []*User{
-				{ID: 1, Name: "John", Surname: "Smith"},
-				{ID: 2, Name: "Jill", Surname: "Doe"},
+			Results: []interface{}{
+				&User{ID: 1, Name: "John", Surname: "Smith"},
+				&User{ID: 2, Name: "Jill", Surname: "Doe"},
 			},
 		},
 		err: nil,

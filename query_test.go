@@ -5,6 +5,8 @@ import (
 	"net/url"
 	"reflect"
 	"testing"
+
+	"github.com/yohgo/pagination"
 )
 
 // newQueryDataProvider provides data for the TestNewQuery function.
