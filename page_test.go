@@ -48,7 +48,7 @@ var newPageDataProvider = []struct {
 				Previous: "",
 				Next:     "",
 			},
-			Results: []interface{}{},
+			Results: []*User{},
 		},
 		err: nil,
 	},
@@ -65,8 +65,8 @@ var newPageDataProvider = []struct {
 				Previous: "",
 				Next:     "",
 			},
-			Results: []interface{}{
-				&User{ID: 1, Name: "John", Surname: "Smith"},
+			Results: []*User{
+				{ID: 1, Name: "John", Surname: "Smith"},
 			},
 		},
 		err: nil,
@@ -86,10 +86,10 @@ var newPageDataProvider = []struct {
 				Previous: "",
 				Next:     "",
 			},
-			Results: []interface{}{
-				&User{ID: 1, Name: "John", Surname: "Smith"},
-				&User{ID: 2, Name: "Jill", Surname: "Doe"},
-				&User{ID: 3, Name: "Paul", Surname: "Johnson"},
+			Results: []*User{
+				{ID: 1, Name: "John", Surname: "Smith"},
+				{ID: 2, Name: "Jill", Surname: "Doe"},
+				{ID: 3, Name: "Paul", Surname: "Johnson"},
 			},
 		},
 		err: nil,
@@ -109,10 +109,10 @@ var newPageDataProvider = []struct {
 				Previous: "",
 				Self:     "api.demo.com/v1/users?page=1&limit=3&order_by=name&order=asc",
 			},
-			Results: []interface{}{
-				&User{ID: 1, Name: "John", Surname: "Smith"},
-				&User{ID: 2, Name: "Jill", Surname: "Doe"},
-				&User{ID: 3, Name: "Paul", Surname: "Johnson"},
+			Results: []*User{
+				{ID: 1, Name: "John", Surname: "Smith"},
+				{ID: 2, Name: "Jill", Surname: "Doe"},
+				{ID: 3, Name: "Paul", Surname: "Johnson"},
 			},
 		},
 		err: nil,
@@ -132,10 +132,10 @@ var newPageDataProvider = []struct {
 				Previous: "api.demo.com/v1/users?limit=3&order=asc&order_by=name&page=1",
 				Self:     "api.demo.com/v1/users?page=2&limit=3&order_by=name&order=asc",
 			},
-			Results: []interface{}{
-				&User{ID: 1, Name: "John", Surname: "Smith"},
-				&User{ID: 2, Name: "Jill", Surname: "Doe"},
-				&User{ID: 3, Name: "Paul", Surname: "Johnson"},
+			Results: []*User{
+				{ID: 1, Name: "John", Surname: "Smith"},
+				{ID: 2, Name: "Jill", Surname: "Doe"},
+				{ID: 3, Name: "Paul", Surname: "Johnson"},
 			},
 		},
 		err: nil,
@@ -154,9 +154,9 @@ var newPageDataProvider = []struct {
 				Previous: "api.demo.com/v1/users?limit=3&order=desc&order_by=surname&page=2",
 				Self:     "api.demo.com/v1/users?page=3&limit=3&order_by=surname&order=desc",
 			},
-			Results: []interface{}{
-				&User{ID: 1, Name: "John", Surname: "Smith"},
-				&User{ID: 2, Name: "Jill", Surname: "Doe"},
+			Results: []*User{
+				{ID: 1, Name: "John", Surname: "Smith"},
+				{ID: 2, Name: "Jill", Surname: "Doe"},
 			},
 		},
 		err: nil,
