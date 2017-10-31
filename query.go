@@ -12,6 +12,7 @@ type Query struct {
 	Limit   int
 	OrderBy string
 	Order   string
+	Search  *Search
 }
 
 // NewQuery creates a new pagination query.
@@ -24,8 +25,20 @@ func NewQuery(query url.Values) (*Query, error) {
 	// Converts we validated before so we can ignore errors
 	page, _ := strconv.Atoi(query.Get("page"))
 	limit, _ := strconv.Atoi(query.Get("limit"))
+	search, err := NewSearch(query)
 
-	return &Query{Page: page, Limit: limit, OrderBy: query.Get("order_by"), Order: query.Get("order")}, nil
+	if err != nil {
+		return nil, err
+	}
+
+	return &Query{
+			Page:    page,
+			Limit:   limit,
+			OrderBy: query.Get("order_by"),
+			Order:   query.Get("order"),
+			Search:  search,
+		},
+		nil
 }
 
 // ValidateQuery validates a collection of url parameters that form a query.
